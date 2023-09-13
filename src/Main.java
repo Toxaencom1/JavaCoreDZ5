@@ -80,7 +80,7 @@ public class Main {
                 } else {
                     File newFolder = new File(target + "\\" + f.getName());
                     newFolder.mkdir();
-                    copyFolder(sfp.getCanonicalPath() + "\\" + f.getName(),
+                    copyFolder(f.getCanonicalPath(),
                             newFolder.getCanonicalPath());
                 }
             }
