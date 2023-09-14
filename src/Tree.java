@@ -37,10 +37,10 @@ public class Tree {
             }
         } else {
             if (isLast) {
-                System.out.print("└─");
+                System.out.print("└─ ");
                 indent += "  ";
             } else {
-                System.out.print("├─");
+                System.out.print("├─ ");
                 indent += "│ ";
             }
         }
