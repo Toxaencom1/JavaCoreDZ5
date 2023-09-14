@@ -1,4 +1,6 @@
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -21,6 +23,7 @@ public class Main {
      * @param args
      */
     public static void main(String[] args) {
+
         try {
             if (backup(".\\src")) {
                 File file = new File(".\\backup");
@@ -49,7 +52,10 @@ public class Main {
         File backup = new File(".\\backup\\");
         if (!backup.exists()) {
             backup.mkdir();
+            // Choose method here ...
             copyFolder(sp.getCanonicalPath(), backup.getCanonicalPath());
+//            copyFolderThroughStream(sp.getCanonicalPath(), backup.getCanonicalPath());
+
             return true;
         } else {
             System.out.println("Folder \"backup\" exists already!");
@@ -82,6 +88,40 @@ public class Main {
                     newFolder.mkdir();
                     copyFolder(f.getCanonicalPath(),
                             newFolder.getCanonicalPath());
+                }
+            }
+        }
+    }
+
+    /**
+     * Recursive Method to copy folders and files through the streams. //  FileInputStream/FileOutputStream version
+     * <p>
+     * Specify here the paths from(sourceFolderPath) and where(toPath) parameters.
+     *
+     * @param sourceFolderPath from path
+     * @param toPath           where to copy
+     * @throws IOException       when there are problems finding a folder paths
+     * @throws SecurityException Access troubles
+     */
+    private static void copyFolderThroughStream(String sourceFolderPath, String toPath) throws IOException, SecurityException {
+        File sfp = new File(sourceFolderPath);
+        sfp = sfp.getCanonicalFile();
+        File[] files = sfp.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                if (!file.isDirectory()) {
+                    try (FileInputStream fis = new FileInputStream(sourceFolderPath+"\\"+file.getName());
+                         FileOutputStream fos = new FileOutputStream(toPath+"\\"+file.getName())) {
+                        int b;
+                        while ((b = fis.read())!=-1){
+                            fos.write(b);
+                        }
+                    }
+                } else {
+                    File newPath = new File(toPath + "\\" + file.getName());
+                    newPath.mkdir();
+                    copyFolderThroughStream(sourceFolderPath + "\\" + file.getName(),
+                            newPath.getCanonicalPath());
                 }
             }
         }
